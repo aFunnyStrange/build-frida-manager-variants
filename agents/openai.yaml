@@ -1,0 +1,6 @@
+interface:
+  display_name: "[Draft] Build Frida Manager Variants"
+  short_description: "Build and qualify exact Frida Manager variants"
+  default_prompt: "Use $build-frida-manager-variants to prepare and qualify an exact Frida version for this Frida Manager."
+policy:
+  allow_implicit_invocation: false
