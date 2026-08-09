@@ -31,6 +31,11 @@ patches, and reproducible commands separately.
 Use current official Frida release/source information when selecting a version or URL. Treat repository locks
 as verified repository evidence, not proof that upstream is still current.
 
+For failures involving version promotion, Android/root-manager differences, boot readiness, generated
+artifacts, installed-file hashes, or release packaging, read
+[verified-history-qualification-lessons.md](references/verified-history-qualification-lessons.md). Its facts
+come from one retrieved task and must be requalified for new versions and environments.
+
 ## Select the workflow
 
 1. **Official-prebuilt route**: acquire the exact server and devkit from official release assets, verify hashes,
@@ -55,6 +60,9 @@ do not hand-edit generated locks or package trees.
 
 Every variant lock must bind the Frida version, ABI, Manager protocol, Engine bytes, server bytes and source,
 adapter bytes/interface, qualification state, and report reference. Hash both inputs and final packaged files.
+
+Any change to Engine source, compatibility prelude, adapter, server bytes, packaging, or generated WebUI
+creates a new candidate identity. Do not carry a previous binary's `stable` label across the hash change.
 
 ## Qualify by gates
 

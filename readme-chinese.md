@@ -9,6 +9,10 @@
 
 它会严格区分下载 Frida 官方预编译 Server 与从源码编译 Frida。
 
+Skill 现已加入一份仅从实际读取的“熟悉并调整 Frida UI 管理器”会话提取的资格验证经验，涵盖候选哈希
+变化、安装文件比对、Android/Root Manager 矩阵差异、Boot readiness、blocked 版本处理、原生构建
+入口以及 GitHub Release 产物完整性。
+
 ## 安装到 Codex
 
 草稿激活前不要安装。激活后，把完整的 `build-frida-manager-variants/` 源码目录链接到用户 Skill
@@ -43,4 +47,5 @@ ln -s "$source_dir" "$link_path"
 
 - `SKILL.md`：身份、获取/编译、打包、资格验证与发布关卡。
 - `references/`：产物合同、兼容性矩阵和发布证据。
+- `references/verified-history-qualification-lessons.md`：实际会话中的版本故障与晋级关卡。
 - `scripts/check_variant_readiness.py`：只读检查 Manager 变体锁、哈希和目录结构。

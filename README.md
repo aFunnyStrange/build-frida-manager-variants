@@ -9,6 +9,10 @@ evidence consistent while separating build success from runtime compatibility.
 
 It explicitly distinguishes downloading an official prebuilt server from compiling Frida from source.
 
+The Skill includes qualification lessons extracted only from the retrieved task “熟悉并调整 Frida UI
+管理器”, including candidate hash churn, installed-file comparison, Android/root-manager matrix differences,
+boot readiness, blocked-version handling, native build entrypoints, and GitHub Release asset integrity.
+
 ## Install for Codex
 
 Do not install this draft until it is activated. After activation, link the complete
@@ -45,4 +49,5 @@ agent's format, tools, and permissions after import.
 
 - `SKILL.md`: identity, acquisition/build, packaging, qualification, and release gates.
 - `references/`: artifact contract, compatibility matrix, and release evidence.
+- `references/verified-history-qualification-lessons.md`: retrieved variant failures and promotion gates.
 - `scripts/check_variant_readiness.py`: read-only lock/hash/structure checker for a Manager variant.
