@@ -1,17 +1,18 @@
 # Build Frida Manager Variants
 
-> Status: **draft-inactive**. Static validation is available; representative version onboarding and authorized
-> live compatibility qualification are still required before activation.
+> Status: **draft-inactive**. The v2.0.2 repository, authorized matrix, and completed public release now provide
+> representative evidence. Exact report-to-digest binding, an independent forward use, and explicit activation
+> approval remain.
 
-This Skill acquires or builds, locks, packages, and qualifies an exact Frida version for Frida Manager. It
-keeps `frida-server`, the frida-core Device Engine, the typed server adapter, root-module assets, and release
-evidence consistent while separating build success from runtime compatibility.
+This Skill acquires or builds, locks, packages, and qualifies an exact Frida runtime for Frida Manager. It
+keeps `frida-server`, the frida-core Device Engine, typed server adapter, version-owned compatibility assets,
+root-module package, and release evidence consistent while separating build success from runtime
+compatibility. It distinguishes official prebuilt acquisition from source compilation.
 
-It explicitly distinguishes downloading an official prebuilt server from compiling Frida from source.
-
-The Skill includes qualification lessons extracted only from the retrieved task “熟悉并调整 Frida UI
-管理器”, including candidate hash churn, installed-file comparison, Android/root-manager matrix differences,
-boot readiness, blocked-version handling, native build entrypoints, and GitHub Release asset integrity.
+The workflow combines verified lessons from both retrieved `frida_manager` tasks. It covers
+product-versus-runtime version axes, build targets and toolchains, three lock layers, candidate hash churn,
+Android/root-manager matrices, blocked-version quarantine, and GitHub Release asset integrity.
+The completed v2.0.2 review also adds native binary path-redaction and post-publication provider-digest checks.
 
 ## Install for Codex
 
@@ -48,6 +49,7 @@ agent's format, tools, and permissions after import.
 ## Files
 
 - `SKILL.md`: identity, acquisition/build, packaging, qualification, and release gates.
-- `references/`: artifact contract, compatibility matrix, and release evidence.
-- `references/verified-history-qualification-lessons.md`: retrieved variant failures and promotion gates.
+- `references/build-targets-and-version-axes.md`: identities, toolchains, targets, locks, and locked repackage
+  semantics.
+- `references/`: artifact, matrix, release, and verified-history evidence.
 - `scripts/check_variant_readiness.py`: read-only lock/hash/structure checker for a Manager variant.

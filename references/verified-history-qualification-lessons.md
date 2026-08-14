@@ -1,61 +1,106 @@
-# Verified Historical Task: Variant and Qualification Lessons
+# Verified Historical Tasks: Variant and Qualification Lessons
 
 ## Evidence scope
 
-This reference uses only the retrieved task **“熟悉并调整 Frida UI 管理器”**. The other task in the same
-working directory was excluded. The recorded matrix included Frida 17.10.1 on two authorized arm64 Android
-environments using different Android generations and root managers. An older Frida 16.5.6 path remained
-blocked after serious runtime instability. These are historical facts, not current upstream compatibility
-guarantees.
+This reference uses both retrieved tasks in the `frida_manager` working directory: **熟悉并调整 Frida UI
+管理器** and **查找 frida_manager 构建文档**. The first recorded Manager development, releases, and an
+authorized compatibility matrix; the second clarified build targets, toolchains, output names, and the inputs
+needed to add a version. The matrix later included Frida 17.10.1 and 17.17.0 across authorized arm64 Android
+13, 14, and 16 environments, while 16.7.19 and 16.5.6 remained excluded after different runtime failures.
+These are historical facts for exact candidates, not current upstream compatibility guarantees. A later read
+of the completed first task, the local repository, and GitHub's public API confirmed that Manager v2.0.2 was
+published from commit `e54e3a3` with two stable Frida 17 runtime modules, two matching standalone servers,
+five Hub binaries, an examples archive, and `SHA256SUMS` as 11 public assets.
 
 ## Candidate identity lessons
 
-1. Treat every native or generated change as a new candidate. In the task, Engine logging, Spawn recovery,
-   Java-Bridge handling, and adapter/package changes repeatedly changed the Engine or module hash. Each new
-   hash required a new lock and could not inherit the older binary's device qualification.
+1. Treat every native or generated change as a new candidate. Engine, Java-Bridge compatibility, adapter,
+   common service, WebUI, and package changes repeatedly changed artifact or module hashes. Exact native bytes
+   could not inherit the older binary's device qualification.
 2. Downgrade a changed but untested stable variant to `experimental` until the exact final bytes pass the
    declared live matrix. Build, protocol fixtures, and a prior version's device success prove only `candidate`.
 3. Compare three byte sets separately: source/build outputs, final packaged assets, and files installed on each
-   device. The task caught a device-bundled Hub that differed from the current module tree even though other
+   device. The history caught a device-bundled Hub that differed from the current module tree even though other
    core files matched.
 4. Keep old candidate hashes as historical evidence, never as co-current releases. A report must identify the
-   exact Engine, server, adapter, module ZIP, Hub, and Manager revision it tested.
+   exact Engine, server, adapter, compatibility prelude, module ZIP, common services, and Manager revision.
+5. Keep Manager product identity separate from Frida runtime identity. Hub/ctl and other common services were
+   built from the Manager protocol and release, while Engine/server/compatibility bytes were Frida-version
+   owned. Packaging them together did not make the Hub a Frida-version-specific artifact.
+6. The history exposed three contracts: official Core archive dependency locks, final packaged runtime locks,
+   and release SHA-256 manifests. None substitutes for another.
 
 ## Compatibility matrix lessons
 
-- One Frida version passed on both an Android 16/SukiSU-class environment and an Android 13/KernelSU
-  Next-class environment, but the failure modes differed. Do not extrapolate “newer Android passed, therefore
-  older Android passes”; run the matrix.
+- Do not extrapolate between Android generations or root managers. Run every declared row and retain exact
+  candidate hashes.
 - Boot timing is part of compatibility. The first server start after boot required a once-per-boot readiness
   gate in one environment, while later same-boot restarts were fast.
-- Process enumeration and paused Spawn behavior varied by Android environment. Qualification must cover PID
-  Attach, Name Attach, normal Spawn, paused Spawn/Resume, target exit, and recovery independently.
-- A version that compiled and performed limited operations still remained blocked after target and system
-  instability. Never retry a blocked live path without a new hypothesis, isolation plan, exact authorization,
-  rollback, and stopping conditions.
-- A new compatibility prelude can make traditional raw Java scripts work, but its Frida bundle framing and
-  version-locked bytes become part of the variant contract and live regression matrix.
+- Process enumeration, Attach, and paused Spawn behavior varied. Qualify exact-PID Attach, Name Attach, normal
+  Spawn, paused Spawn/Resume, target exit, and recovery independently.
+- Arm64-only Android may legitimately run only the primary zygote. A readiness gate that required both zygote
+  processes falsely blocked a compatible device; readiness must follow the actual ABI/zygote model.
+- A Java/JNI demo initially failed because it called the native method through the wrong object and ran before
+  the target library initialized. Correct the owned probe and regress it on the stable baseline before
+  assigning the failure to a Frida candidate.
+- Frida 16.x did not produce one family result. 16.7.19 passed bounded Android 13/14 stages but failed Android
+  16 Attach; 16.5.6 disturbed process creation in another environment. A blocked live path requires a new
+  hypothesis, isolation plan, exact authorization, rollback, and stopping conditions before any retry.
+- A compatibility prelude can make traditional raw Java scripts work, but its framed bundle and exact bytes
+  become part of the variant contract and live regression matrix.
 
 ## Build-system lessons
 
-- Use repository-resolved absolute toolchain paths before changing working directories; otherwise a valid
-  bundled toolchain can appear missing.
-- Provide native Windows `.bat` and POSIX `.sh` entrypoints when the product promises those platforms. Test
-  the entrypoints themselves, not merely their underlying commands.
-- Windows delayed expansion can consume `!` inside validation expressions. Prefer batch-safe expressions and
-  add a real Windows packaging test.
-- `frida-compile` output is a framed bundle, not always plain concatenable JavaScript. Disable source maps when
-  required, parse the declared executable section strictly, and include the resulting prelude hash in the
-  artifact lock.
-- If a root manager protects the mounted module tree, install the rebuilt ZIP through the supported module
-  installer and reboot instead of claiming a hot-swapped file was validated.
+- Resolve repository and toolchain paths before changing working directories. `sdk.dir=...` belongs in
+  `local.properties`; Windows shells need an environment variable such as `ANDROID_SDK_ROOT`.
+- Provide and test native Windows `.bat` and POSIX `.sh` entrypoints when those hosts are promised. Windows
+  delayed expansion can consume `!` inside validation expressions.
+- `engine` built the version-specific native Engine; `sync`, `remote`, and `webui` built common components;
+  `module` assembled them, and `all` forced a complete rebuild. The official server was a runtime/packaging
+  input, not an Engine compile-time input.
+- Target platform meant Android ABI, not host operating system. The remote target matrix separately built Hub
+  and ctl binaries for desktop/server platforms.
+- `frida-compile` output is framed, not always plain concatenable JavaScript. Disable source maps when required,
+  parse the declared executable section strictly, and lock the resulting prelude bytes.
+- The maintained registration entrypoint historically omitted the Frida 17 Java compatibility artifact.
+  Manual hash edits made an immediate build pass but were not durable; the generator must own every
+  version-specific artifact.
+- A flag named `--use-locked-engine` still rebuilt the Java compatibility artifact. Rebuilding any locked
+  version-owned byte contradicts an ordinary locked repackage and can cause unexplained hash churn.
+- One experimental override admitted `blocked` as well as incomplete variants. `blocked` is quarantine state,
+  not an opt-in package flavor; the variant stays excluded from ordinary builds/releases.
+- If a root manager protects the mounted module tree, install the rebuilt ZIP through its supported installer
+  and reboot instead of claiming a hot-swapped file was validated.
 
-## Qualification ladder learned from the task
+## Release and reporting lessons
+
+- Ordinary build outputs and product-versioned Release asset names differed. Stage copies and rename them
+  deterministically, then recompute hashes.
+- Scan source, generated WebUI, ZIPs, examples, and staged assets. Keep exact device serials, private package
+  names, workstation paths, credentials, and raw authorization evidence in ignored local files.
+- Verify ignored examples intended for release are actually tracked.
+- When moving a tag changes GitHub's automatic source archive, recreate or update the Release and verify every
+  asset; the automatic source archive follows its tag target.
+- A prepared tag or filled browser form is not a published Release. Verify tag target, uploaded assets,
+  download links, hashes, and Latest state before reporting completion.
+- The v2.0.2 browser bulk upload failed even though file access had already been enabled. Uploading assets
+  individually, waiting for each progress state, counting 11 attached names before Publish, and querying the
+  public release after navigation produced reliable completion evidence.
+- A text-only privacy scan missed absolute workstation paths embedded in native Engine symbol metadata.
+  Reproducible compiler prefix maps removed them, but also changed both Engine hashes. Apply and scan these
+  flags before live qualification so the final released bytes, lock, and report remain one candidate.
+- GitHub's public API exposed SHA-256 digests for every uploaded asset. Those digests matched the local manifest
+  entries; the API digest for `SHA256SUMS` separately proved the manifest file itself.
+- The published 17.10.1 lock referenced a public validation summary, but that summary did not contain the final
+  artifact digests. The 17.17.0 stable lock omitted `qualification.report`. Treat both as evidence-chain gaps:
+  successful release publication and runtime qualification do not replace cryptographic report binding.
+
+## Qualification ladder learned from the tasks
 
 ### Candidate
 
 - exact official prebuilt or locked source provenance;
-- matching server/core/adapter/ABI/protocol identity;
+- matching server/core/adapter/ABI/protocol and compatibility identity;
 - deterministic build and package output;
 - final packaged hashes verified;
 - static and protocol fixtures pass.
@@ -71,21 +116,10 @@ guarantees.
 - exact installed files match the final package;
 - normal and paused Spawn, PID and Name Attach, script load/RPC/Reload, Detach/Kill, restart recovery, custom
   port restoration, boot persistence, and cleanup pass on every declared row;
-- documentation and the qualification report name the exact hashes and unsupported dimensions.
+- documentation and sanitized qualification reports name exact hashes and unsupported dimensions.
 
 ### Blocked
 
-- a reproducible safety, system stability, startup, protocol, or runtime failure prevents promotion;
-- the variant stays excluded from ordinary builds/releases even if compilation succeeds.
-
-## Release lessons
-
-- Verify ordinary build paths separately from release publication.
-- Before release, compare installed validated module files with the release staging tree, then hash the final
-  module ZIP, standalone server, every Hub binary, example archive, and checksum manifest.
-- Keep public examples tracked and secrets/private evidence ignored. Inspect the generated archive, not only
-  source control status.
-- A GitHub Release's automatic source archive follows its tag target. If a tag is deliberately moved, verify
-  whether the existing Release must be recreated and re-upload every asset with fresh checksums.
-- Publish only after the final asset set is stable; post-build documentation or generated-file changes can
-  invalidate previously recorded hashes.
+- a reproducible safety, startup, protocol, or runtime failure prevents promotion;
+- the failure and cleanup evidence remain recorded;
+- ordinary package and release paths reject the candidate even when experimental builds are enabled.

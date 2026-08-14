@@ -1,17 +1,16 @@
 # 构建 Frida Manager 版本变体
 
-> 状态：**draft-inactive（草稿，未激活）**。已有静态验证能力；激活前仍需完成代表性新版本接入和
-> 经过授权的真实兼容性验证。
+> 状态：**draft-inactive（草稿，未激活）**。v2.0.2 仓库、授权矩阵和已完成的公开 Release 已提供
+> 代表性证据；激活前仍需补齐报告与精确哈希绑定、一次独立前向使用和用户明确批准。
 
 这个 Skill 为 Frida Manager 获取或编译、锁定、打包并验证一个精确 Frida 版本，使
-`frida-server`、基于 frida-core 的 Device Engine、类型化 Server Adapter、Root 模块产物和发布证据
-保持一致，同时明确区分“构建成功”和“运行时兼容”。
+`frida-server`、基于 frida-core 的 Device Engine、类型化 Server Adapter、版本兼容产物、Root 模块和
+发布证据保持一致，并明确区分“构建成功”和“运行时兼容”。
 
-它会严格区分下载 Frida 官方预编译 Server 与从源码编译 Frida。
-
-Skill 现已加入一份仅从实际读取的“熟悉并调整 Frida UI 管理器”会话提取的资格验证经验，涵盖候选哈希
-变化、安装文件比对、Android/Root Manager 矩阵差异、Boot readiness、blocked 版本处理、原生构建
-入口以及 GitHub Release 产物完整性。
+它结合工作目录下两个已实际读取的历史会话，补充了 Manager 产品版本与 Frida 运行时版本的独立
+维度、构建目标与工具链、依赖锁/运行时产物锁/发布清单三层契约、候选哈希变化、Android/Root
+Manager 矩阵、blocked 隔离和 GitHub Release 完整性规则。
+v2.0.2 的完整发布复核还补充了 Native 二进制路径脱敏和发布后平台 digest 校验。
 
 ## 安装到 Codex
 
@@ -46,6 +45,6 @@ ln -s "$source_dir" "$link_path"
 ## 文件说明
 
 - `SKILL.md`：身份、获取/编译、打包、资格验证与发布关卡。
-- `references/`：产物合同、兼容性矩阵和发布证据。
-- `references/verified-history-qualification-lessons.md`：实际会话中的版本故障与晋级关卡。
+- `references/build-targets-and-version-axes.md`：版本维度、构建目标、工具链、锁和复用产物语义。
+- `references/`：产物合同、兼容性矩阵、发布和历史证据。
 - `scripts/check_variant_readiness.py`：只读检查 Manager 变体锁、哈希和目录结构。

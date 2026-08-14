@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional, Sequence
 
 
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
-RELEASE_STATES = {"candidate", "experimental", "stable", "blocked"}
+RELEASE_STATES = {"unqualified", "candidate", "experimental", "stable", "blocked"}
 
 
 def sha256_file(path: Path) -> str:
@@ -95,9 +95,10 @@ def audit_variant(manager_root: Path, version: str) -> List[str]:
     release_status = qualification.get("releaseStatus")
     if release_status not in RELEASE_STATES:
         errors.append(
-            "artifact-lock.json: qualification.releaseStatus must be candidate, "
-            "experimental, stable, or blocked"
+            "artifact-lock.json: qualification.releaseStatus must be unqualified, "
+            "candidate, experimental, stable, or blocked"
         )
+    report_text: Optional[str] = None
     report = qualification.get("report")
     if not isinstance(report, str) or not report.strip():
         errors.append("artifact-lock.json: qualification.report must be recorded")
@@ -105,6 +106,11 @@ def audit_variant(manager_root: Path, version: str) -> List[str]:
         report_path = manager_root / report
         if not report_path.is_file():
             errors.append(f"qualification report does not exist: {report_path}")
+        else:
+            try:
+                report_text = report_path.read_text(encoding="utf-8-sig").lower()
+            except (OSError, UnicodeError) as error:
+                errors.append(f"cannot read qualification report {report_path}: {error}")
 
     engine = require_mapping(lock, "engine", errors)
     server = require_mapping(lock, "server", errors)
@@ -122,6 +128,42 @@ def audit_variant(manager_root: Path, version: str) -> List[str]:
     interface_version = adapter.get("interfaceVersion")
     if not isinstance(interface_version, int) or isinstance(interface_version, bool):
         errors.append("artifact-lock.json: adapter.interfaceVersion must be an integer")
+
+    try:
+        major = int(version.split(".", 1)[0])
+    except ValueError:
+        major = 0
+    compatibility = lock.get("compatibility")
+    if major >= 17 and not isinstance(compatibility, dict):
+        errors.append(
+            "artifact-lock.json: compatibility must lock the version-owned "
+            "Java-Bridge prelude for Frida 17 or newer"
+        )
+    elif isinstance(compatibility, dict):
+        verify_artifact(variant_dir, "compatibility", compatibility, errors)
+        compatibility_source = compatibility.get("source")
+        if not isinstance(compatibility_source, str) or not compatibility_source.strip():
+            errors.append("artifact-lock.json: compatibility.source must record provenance")
+
+    if report_text is not None:
+        report_sections = [
+            ("engine", engine),
+            ("server", server),
+            ("adapter", adapter),
+        ]
+        if isinstance(compatibility, dict):
+            report_sections.append(("compatibility", compatibility))
+        for section_name, section in report_sections:
+            expected = section.get("sha256")
+            if (
+                isinstance(expected, str)
+                and SHA256_PATTERN.fullmatch(expected.lower()) is not None
+                and expected.lower() not in report_text
+            ):
+                errors.append(
+                    f"qualification report does not bind the {section_name} SHA-256: "
+                    f"{expected.lower()}"
+                )
     return errors
 
 
