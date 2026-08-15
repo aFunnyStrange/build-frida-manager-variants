@@ -9,8 +9,9 @@ needed to add a version. The matrix later included Frida 17.10.1 and 17.17.0 acr
 13, 14, and 16 environments, while 16.7.19 and 16.5.6 remained excluded after different runtime failures.
 These are historical facts for exact candidates, not current upstream compatibility guarantees. A later read
 of the completed first task, the local repository, and GitHub's public API confirmed that Manager v2.0.2 was
-published from commit `e54e3a3` with two stable Frida 17 runtime modules, two matching standalone servers,
-five Hub binaries, an examples archive, and `SHA256SUMS` as 11 public assets.
+first published from `e54e3a3`, then explicitly replaced at final source commit `3c37c2f`. The final Release
+still contained two stable Frida 17 runtime modules, two matching standalone servers, five Hub binaries, an
+examples archive, and `SHA256SUMS` as exactly 11 public assets.
 
 ## Candidate identity lessons
 
@@ -94,6 +95,18 @@ five Hub binaries, an examples archive, and `SHA256SUMS` as 11 public assets.
 - The published 17.10.1 lock referenced a public validation summary, but that summary did not contain the final
   artifact digests. The 17.17.0 stable lock omitted `qualification.report`. Treat both as evidence-chain gaps:
   successful release publication and runtime qualification do not replace cryptographic report binding.
+- The final five-device matrix covered each device's standalone and local-RPC path, the complete collaboration
+  flow on maintained baseline rows, five explicit external-Hub routes, one automatic group route, a second
+  reboot/restore pass, and installed-file hash checks. This proves only that exact sanitized matrix.
+- A client request set exactly to the 30-second server ceiling crossed a scheduling/clock boundary; a 25-second
+  client budget passed while the server ceiling remained unchanged. Five-branch presence needed a separate
+  60-second convergence window. Operation deadlines, online TTL, and discovery convergence are independent.
+- The final same-version replacement exposed several release-tool failures: PowerShell 5 binary upload through
+  `Invoke-WebRequest` raised an internal null-reference error, console output was buffered, and GitHub asset
+  renaming returned 404 after temporary uploads. The resumable script reused verified uploads and ultimately
+  uploaded exact final names, then verified all 11 assets and absence of temporary names through the API.
+- A fixed token-shaped value in a demo test survived earlier filename-oriented checks. Public scans must inspect
+  release-bound examples and test data for credential-shaped literals, even when they are believed to be fake.
 
 ## Qualification ladder learned from the tasks
 

@@ -48,3 +48,6 @@ ln -s "$source_dir" "$link_path"
 - `references/build-targets-and-version-axes.md`：版本维度、构建目标、工具链、锁和复用产物语义。
 - `references/`：产物合同、兼容性矩阵、发布和历史证据。
 - `scripts/check_variant_readiness.py`：只读检查 Manager 变体锁、哈希和目录结构。
+
+最新会话增量补充了五机集群验证、RPC 截止时间与 Presence 收敛窗口分离、同版本 Release
+替换的可恢复事务，以及替换后通过平台 API 逐项核对公开附件的规则。

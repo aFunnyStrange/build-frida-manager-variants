@@ -12,7 +12,9 @@ compatibility. It distinguishes official prebuilt acquisition from source compil
 The workflow combines verified lessons from both retrieved `frida_manager` tasks. It covers
 product-versus-runtime version axes, build targets and toolchains, three lock layers, candidate hash churn,
 Android/root-manager matrices, blocked-version quarantine, and GitHub Release asset integrity.
-The completed v2.0.2 review also adds native binary path-redaction and post-publication provider-digest checks.
+The completed and later explicitly replaced v2.0.2 review also adds five-device clustered qualification,
+deadline-versus-convergence rules, native binary path-redaction, resumable same-version replacement safeguards,
+and post-publication provider-digest checks.
 
 ## Install for Codex
 
